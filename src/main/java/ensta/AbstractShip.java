@@ -9,18 +9,18 @@ abstract class  AbstractShip
     private int strikeCount;
 
     public void addStrike(){
-        //number of strikes possible
+       this.strikeCount++;
+
     }
     public boolean isSunk(){
-        return false;
+        return this.getStrikeCount()==this.getSize();
+
     }
     public int getStrikeCount() {
         return strikeCount;
     }
 
-    public void setStrikeCount(int strikeCount) {
-        this.strikeCount = strikeCount;
-    }
+
 
     public AbstractShip(Character label, String name, int size, Oriontation oriontation) {
         this.label = label;

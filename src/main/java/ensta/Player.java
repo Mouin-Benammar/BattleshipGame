@@ -52,7 +52,7 @@ public class Player {
     }
 
     public Hit sendHit(int[] coords) {
-        boolean done;
+        boolean done=false;/////////
         Hit hit = null;
 
         do {

@@ -1,10 +1,19 @@
 package ensta;
 
 public class ShipState {
+    public void setStruck(boolean struck) {
+        this.struck = struck;
+    }
+
     private boolean struck;
+
+    public AbstractShip getReference() {
+        return reference;
+    }
+
     private AbstractShip reference;
 
-    public ShipState(boolean struck, AbstractShip reference) {
+    public ShipState( AbstractShip reference,boolean struck) {
         this.struck = struck;
         this.reference = reference;
     }
@@ -13,27 +22,30 @@ public class ShipState {
         return struck;
     }
 
-    public void addStruck(boolean struck,int x ,int y) {
-        this.reference
-        this.struck = struck;
+    public void addStrike() {
+        this.reference.addStrike();
+
     }
 
-    public AbstractShip getReference() {
+    public AbstractShip getShip() {
         return reference;
     }
 
     public void setReference(AbstractShip reference) {
         this.reference = reference;
     }
-    public void addStrike(){
 
-    }
 
     public String toString(){
+        String s=new String("");
+
+            if(struck) s+=Character.toLowerCase(reference.getLabel()) ;
+            else s+= reference.getLabel().toString();
+        return s;
 
     }
-    boolean isSunk(){
-
+    public boolean isSunk(){
+     return reference.getSize()==reference.getStrikeCount();
     }
 
 }
