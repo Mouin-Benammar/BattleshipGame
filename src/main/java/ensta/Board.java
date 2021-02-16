@@ -76,8 +76,8 @@ public class Board<ships> implements IBoard  {
             for (int j = 0;  j < this.getShips()[i].length; j++){
 
 
-                if(null != this.ships[i][j]) {
-                    if (attacks[i][j]!=null)
+                if(null != this.ships[i][j]&&hasShip(i,j)) {
+                    if (ships[i][j].isStruck())
                         System.out.print(ColorUtil.colorize(ships[i][j].toString() + "    ", ColorUtil.Color.RED));
                     else System.out.print(ships[i][j].toString() +"    " ) ;
                 }
@@ -91,7 +91,7 @@ public class Board<ships> implements IBoard  {
     }
 
     public boolean hasShip(int x, int y){
-        if(ships[x][y]!=null) return true;
+        if(ships[x][y]!=null) { if(!ships[x][y].getReference().isSunk())return true;}
         return false;
     }
     public boolean putShip(AbstractShip ship, int x, int y) {
@@ -101,7 +101,7 @@ public class Board<ships> implements IBoard  {
         switch (o){
             case EAST:
                 try{
-                if ((x+s)>this.getSize()||this.notintercepted(x,y,s,o)) throw new InvalidCoordenatesException();
+                if ((x+s)>this.getSize()||notintercepted(x,y,s,o)) throw new InvalidCoordenatesException();
                 }
                 catch(InvalidCoordenatesException e){
                     System.out.println(e.getMessage());
@@ -151,7 +151,39 @@ public class Board<ships> implements IBoard  {
         }
         return true;
     }
-    public void setHit(boolean hit, int x, int y){
+
+ public boolean notintercepted(int x , int y , int size , Oriontation o){
+        switch (o){
+            case EAST:
+                for (int i=0; i<size;i++){
+                    if(hasShip(x+i,y)) return true;
+                }
+
+                break;
+            case NORTH:
+                for (int i=0; i<size;i++){
+                    if(hasShip(x,y-i)) return true;
+                }
+
+                break;
+            case WEST:
+                for (int i=0; i<size;i++){
+                    if(hasShip(x-i,y)) return true;
+                }
+
+                break;
+            default:
+                for(int i=0; i<size;i++){
+                    if(hasShip(x,y+i)) return true;
+                }
+
+                break;
+        }
+        return false;
+
+ }
+
+    public void setHit(Boolean hit, int x, int y){
         setAttacks(x,y,hit);
 
     }
@@ -163,37 +195,17 @@ public class Board<ships> implements IBoard  {
 
         return hasShip(x,y)&& getAttacks()[x][y];
     }
- public boolean notintercepted(int x , int y , int size , Oriontation o){
-        switch (o){
-            case EAST:
-                for (int i=0; i<size;i++){
-                    if(null == this.getShips()[x + i][y]) return false;
-                }
 
-                break;
-            case NORTH:
-                for (int i=0; i<size;i++){
-                    if(null==this.getShips()[x][y-i]) return false;
-                }
+    /**
+     * Sends a hit at the given position
+     * @param x
+     * @param y
+     * @return status for the hit (eg : strike or miss)
+     * if a ship is sunk , it will no longer apear on the board
+     */
 
-                break;
-            case WEST:
-                for (int i=0; i<size;i++){
-                    if(null==this.getShips()[x-i][y]) return false;
-                }
-
-                break;
-            default:
-                for (int i=0; i<size;i++){
-                    if(null==this.getShips()[x][y+i]) return false;
-                }
-
-                break;
-        }
-        return true;
-
- }
-public     Hit sendHit(int x, int y){
+    public     Hit sendHit(int x, int y){
+        // if a stike happens in a spot already damaged , it will have no effect
         Character[] types ={'D','S','B','C'};
       setHit(true,x,y);
       if(getHit(x,y)){
@@ -202,17 +214,29 @@ public     Hit sendHit(int x, int y){
           if(this.ships[x][y].isSunk()){
               switch (this.ships[x][y].getReference().getLabel()){
                   case 'D':
+
+                      System.out.println(String.format("%c  coulé",this.ships[x][y].getReference().getLabel()));
+
                       return Hit.valueOf("Destroyer");
                   case 'S':
+                      System.out.println(String.format("%c  coulé",this.ships[x][y].getReference().getLabel()));
+
                       return Hit.valueOf("SUBMARINE");
                   case 'B':
+
+                      System.out.println(String.format("%c  coulé",this.ships[x][y].getReference().getLabel()));
+
                       return Hit.valueOf("BATTLESHIP");
 
                   default:
+
+
+                      System.out.println(String.format("%c  is Sunk !",this.ships[x][y].getReference().getLabel()));
+
                       return Hit.valueOf("CARRIER");
               }
           }
-          else return Hit.valueOf("STRIKE");
+          else return Hit.valueOf("STRUCK");
       }
       return Hit.valueOf("MISS");
     }

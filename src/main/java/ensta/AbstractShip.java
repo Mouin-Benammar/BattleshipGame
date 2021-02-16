@@ -9,7 +9,7 @@ abstract class  AbstractShip
     private int strikeCount;
 
     public void addStrike(){
-       this.strikeCount++;
+        (strikeCount)++;
 
     }
     public boolean isSunk(){
