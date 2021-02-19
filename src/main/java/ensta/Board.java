@@ -192,8 +192,9 @@ public class Board<ships> implements IBoard  {
      * @return if an atack and a ship exist in the same spot , the hit was successful
      */
     public Boolean getHit(int x, int y){
+        if(x<0 || y<0 ||x>= ships.length||y>=ships.length)  return false;
+        return attacks[x][y] ;//&& hasShip(x,y)
 
-        return hasShip(x,y)&& getAttacks()[x][y];
     }
 
     /**
@@ -208,36 +209,40 @@ public class Board<ships> implements IBoard  {
         // if a stike happens in a spot already damaged , it will have no effect
         Character[] types ={'D','S','B','C'};
       setHit(true,x,y);
-      if(getHit(x,y)){
+      if(getHit(x,y)!=null && getHit(x,y)&&hasShip(x,y)){
           this.ships[x][y].addStrike();
           this.ships[x][y].isStruck();
           if(this.ships[x][y].isSunk()){
               switch (this.ships[x][y].getReference().getLabel()){
                   case 'D':
 
-                      System.out.println(String.format("%c  coulé",this.ships[x][y].getReference().getLabel()));
+                      System.out.println(String.format("%c  coulé,  struck at the coordenates %d %d ",this.ships[x][y].getReference().getLabel(),x,y));
 
-                      return Hit.valueOf("Destroyer");
+                      return Hit.valueOf("DESTROYER");
                   case 'S':
-                      System.out.println(String.format("%c  coulé",this.ships[x][y].getReference().getLabel()));
+                      System.out.println(String.format("%c  coulé,  struck at the coordenates %d %d ",this.ships[x][y].getReference().getLabel(),x,y));
 
                       return Hit.valueOf("SUBMARINE");
                   case 'B':
 
-                      System.out.println(String.format("%c  coulé",this.ships[x][y].getReference().getLabel()));
+                      System.out.println(String.format("%c  coulé, struck at the coordenates %d %d ",this.ships[x][y].getReference().getLabel(),x,y));
 
                       return Hit.valueOf("BATTLESHIP");
 
                   default:
 
 
-                      System.out.println(String.format("%c  is Sunk !",this.ships[x][y].getReference().getLabel()));
+                      System.out.println(String.format("%c  coulé, struck at the coordenates %d %d ",this.ships[x][y].getReference().getLabel(),x,y));
 
                       return Hit.valueOf("CARRIER");
               }
           }
-          else return Hit.valueOf("STRUCK");
+          else {
+              System.out.println(String.format("Successful hit  at the coordenates %d %d ! ",x,y));
+              return Hit.valueOf("STRUCK");
+          }
       }
+        System.out.println(String.format(" hit missed at the coordenates %d %d ",x,y));
       return Hit.valueOf("MISS");
     }
 
