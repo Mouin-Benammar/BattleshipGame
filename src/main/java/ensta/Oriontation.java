@@ -2,7 +2,7 @@ package ensta;
 
 import java.util.NoSuchElementException;
 
-public enum Oriontation {
+public enum Oriontation  {
     NORTH("NORTH", 0), SOUTH("SOUTH", 1), EAST("EAST", 2),WEST("WEST", 3);
     public  String val;
     public int val2;

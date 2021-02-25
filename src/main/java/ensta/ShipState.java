@@ -1,6 +1,8 @@
 package ensta;
 
-public class ShipState {
+import java.io.Serializable;
+
+public class ShipState implements Serializable {
     public void setStruck(boolean struck) {
         this.struck = struck;
     }

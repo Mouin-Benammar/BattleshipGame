@@ -2,15 +2,15 @@ package ensta;
 import java.io.Serializable;
 import java.util.List;
 
-public class Player {
+public class Player implements Serializable{
     /* **
      * Attributs
      */
-    protected Board board;
-    protected Board opponentBoard;
-    protected int destroyedCount;
-    protected AbstractShip[] ships;
-    protected boolean lose;
+    protected transient Board board;
+    protected  transient  Board opponentBoard;
+    protected transient int destroyedCount;
+    protected transient AbstractShip[] ships;
+    protected transient  boolean lose;
 
     /* **
      * Constructeur
@@ -50,8 +50,13 @@ public class Player {
             board.print();
         } while (!done);
     }
-
-    public Hit sendHit(int[] coords) {
+    /**
+     * Get if a ship is placed at the given position
+     * @param x
+     * @param y
+     * @return the board name
+     */
+    public Hit sendHit(int coords[]) {
         boolean done=false;/////////
         Hit hit = null;
 
@@ -59,9 +64,13 @@ public class Player {
             System.out.println("où frapper?");
             InputHelper.CoordInput hitInput = InputHelper.readCoordInput();
             // TODO call sendHit on this.opponentBoard
-
+            hit=this.opponentBoard.sendHit(hitInput.x,hitInput.y);
             // TODO : Game expects sendHit to return BOTH hit result & hit coords.
             // return hit is obvious. But how to return coords at the same time ?
+            if(hit!=null) done=true;
+            coords[0]=hitInput.x;
+            coords[1]=hitInput.y;
+
         } while (!done);
 
         return hit;

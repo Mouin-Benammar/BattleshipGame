@@ -34,6 +34,7 @@ import java.util.Scanner;
             Scanner sin = new Scanner(System.in);
             ShipInput res = new ShipInput();
             String[] validOrientations = {"n", "s", "e", "w"}; // North, South, East, West
+            String[] realOriontation={"NORTH","SOUTH","EAST","WEST"};
             boolean done = false;
 
             do {
@@ -42,9 +43,24 @@ import java.util.Scanner;
                     if (in.length == 2) {
                         String coord = in[0];
                         if (Arrays.asList(validOrientations).contains(in[1])) {
+                            switch (in[1]){
+                                case "w":
+                                    in[1]=realOriontation[0];
+                                    break;
+                                case "e":
+                                    in[1]=realOriontation[1];
+                                    break;
+                                case "s":
+                                    in[1]=realOriontation[2];
+                                    break;
+                                case"n":
+                                    in[1]=realOriontation[3];
+                                    break;
+                            }
+
                             res.orientation = in[1];
-                            res.x = coord.charAt(0) - 'a';
-                            res.y = Integer.parseInt(coord.substring(1, coord.length())) - 1;
+                            res.x = Integer.parseInt(coord.substring(1, coord.length())) - 1;
+                            res.y = coord.charAt(0) - 'a';
                             done = true;
                         }
                     }

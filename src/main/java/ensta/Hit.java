@@ -1,8 +1,9 @@
 package ensta;
 
+
 import java.util.NoSuchElementException;
 
-public enum Hit {
+public enum Hit  {
     MISS(-1, "manqué"),
     STRUCK(-2, "touché"),
     DESTROYER(2, "Frégate"),

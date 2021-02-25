@@ -1,5 +1,8 @@
 package ensta;
-public class Board<ships> implements IBoard  {
+
+import java.io.Serializable;
+
+public class Board implements IBoard , Serializable {
     protected String name;
     protected ShipState[][] ships ;
     protected Boolean[][] attacks;
@@ -7,35 +10,59 @@ public class Board<ships> implements IBoard  {
         this.name=n;
         this.ships=new ShipState[10][10];
         this.attacks=new Boolean[10][10];
-    }
+    } /**
+     * Constructor
+     * @param ship The ship to place on the board
+     * @param n the name of the board
+     * @param length the board one dimensional size
+     */
     public Board(String n ,  int length){
         this.name=n;
         this.ships=new ShipState[length][length];
         this.attacks=new Boolean[length][length];
     }
+    /**
+     * @return the board name
+     */
     public String getName() {
         return name;
     }
-    public void setName(String name) {
-        this.name = name;
-    }
+    /**
+
+     * @return the shipState board
+     */
     public ShipState[][] getShips() {
         return ships;
     }
-    public void setShips(int x, int y,AbstractShip s){
-        ships[x][y].setReference(s);
+    /**
+     * Get if a ship is placed at the given position
+     * @param x  horizontal coordenate
+     * @param y vertical coordenate
+     *  @param ship to be placed
+     * @return the board name
+     */
+    public void setShips(int x, int y,AbstractShip ship){
+        ships[x][y].setReference(ship);
         ships[x][y].setStruck(false);
     }
 
+    /**
+
+     * @return the Attacks board
+     */
     public Boolean[][] getAttacks() {
         return attacks;
     }
+
 
     public void setAttacks(int x , int y, Boolean b){
         this.attacks [x][y] = b;
     }
 
+    /**
 
+     * @return prints the current state of the ships and attacks board
+     */
     public  void print(){
         System.out.println("This is  board "+getName()+" state :");
         System.out.println("The attacks map is : ");
@@ -77,7 +104,7 @@ public class Board<ships> implements IBoard  {
 
 
                 if(null != this.ships[i][j]&&hasShip(i,j)) {
-                    if (ships[i][j].isStruck())
+                    if (attacks[i][j]!=null)
                         System.out.print(ColorUtil.colorize(ships[i][j].toString() + "    ", ColorUtil.Color.RED));
                     else System.out.print(ships[i][j].toString() +"    " ) ;
                 }
@@ -86,14 +113,26 @@ public class Board<ships> implements IBoard  {
             System.out.println();
         }
     }
+
     public int getSize(){
         return this.getShips().length;
     }
-
+    /**
+     * Get if a ship is placed at the given position
+     * @param x horizontal coordenate
+     * @param y vertical coordenate
+     */
     public boolean hasShip(int x, int y){
         if(ships[x][y]!=null) { if(!ships[x][y].getReference().isSunk())return true;}
         return false;
     }
+    /**
+     * place a ship at the given position
+     * @param x horizontal coordenate
+     * @param y vertical coordenate
+     * @param ship the ship to be placed
+     * @return true if the ship was placed correctly
+     */
     public boolean putShip(AbstractShip ship, int x, int y) {
         int s=ship.getSize();
         Oriontation o=ship.getOriontation();
@@ -101,7 +140,7 @@ public class Board<ships> implements IBoard  {
         switch (o){
             case EAST:
                 try{
-                if ((x+s)>this.getSize()||notintercepted(x,y,s,o)) throw new InvalidCoordenatesException();
+                if ((x+s)>=this.getSize()||notintercepted(x,y,s,o)) throw new InvalidCoordenatesException();
                 }
                 catch(InvalidCoordenatesException e){
                     System.out.println(e.getMessage());
@@ -138,7 +177,7 @@ public class Board<ships> implements IBoard  {
 
             default:
                 try{
-                    if ((y+s)>this.getSize()||notintercepted(x,y,s,o)){
+                    if ((y+s)>=this.getSize()||notintercepted(x,y,s,o)){
 
                         throw new InvalidCoordenatesException();
                     }}
@@ -151,7 +190,14 @@ public class Board<ships> implements IBoard  {
         }
         return true;
     }
-
+    /**
+     * Get if the ship to be placed at that position may intercept another
+     * @param x
+     * @param y
+     * @param o oriontation
+     * @param size the "to be placed" ship size
+     * @return true if no ship may intercept the placement of this ship
+     */
  public boolean notintercepted(int x , int y , int size , Oriontation o){
         switch (o){
             case EAST:
@@ -189,7 +235,8 @@ public class Board<ships> implements IBoard  {
     }
     /**
      * **
-     * @return if an atack and a ship exist in the same spot , the hit was successful
+     * if an atack and a ship exist in the same spot , the hit was successful
+     * @return  true in that case
      */
     public Boolean getHit(int x, int y){
         if(x<0 || y<0 ||x>= ships.length||y>=ships.length)  return false;
@@ -207,7 +254,6 @@ public class Board<ships> implements IBoard  {
 
     public     Hit sendHit(int x, int y){
         // if a stike happens in a spot already damaged , it will have no effect
-        Character[] types ={'D','S','B','C'};
       setHit(true,x,y);
       if(getHit(x,y)!=null && getHit(x,y)&&hasShip(x,y)){
           this.ships[x][y].addStrike();
