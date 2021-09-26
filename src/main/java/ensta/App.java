@@ -1,5 +1,7 @@
 package ensta;
 
+import ensta.Game.Game;
+
 /**
  * Hello world!
  *
